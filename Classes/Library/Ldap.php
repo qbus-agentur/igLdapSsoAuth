@@ -207,6 +207,22 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
     }
 
     /**
+     * @return string
+     */
+    public function getPaginationCookie()
+    {
+        return $this->ldapUtility->getPaginationCookie();
+    }
+
+    /**
+     * @param string $paginationCookie
+     */
+    public function setPaginationCookie($paginationCookie)
+    {
+        $this->ldapUtility->setPaginationCookie($paginationCookie);
+    }
+
+    /**
      * Returns the LDAP status.
      *
      * @return array

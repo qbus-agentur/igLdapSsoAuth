@@ -74,6 +74,13 @@ class UserImportUtility
     protected $usersUpdated = 0;
 
     /**
+     * Pagination cookie for fetchLdapUsers()
+     *
+     * @var string
+     */
+    protected $paginationCookie = null;
+
+    /**
      * Default constructor.
      *
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
@@ -132,6 +139,9 @@ class UserImportUtility
      */
     public function fetchLdapUsers($continueLastSearch = false)
     {
+        if (!$continueLastSearch) {
+            $this->paginationCookie = null;
+        }
 
         // Get the users from LDAP/AD server
         $ldapUsers = array();
@@ -144,7 +154,11 @@ class UserImportUtility
                 // Optimize the LDAP call by retrieving only attributes in use for the mapping
                 $attributes = Configuration::getLdapAttributes($this->configuration['users']['mapping']);
             }
+
+            Ldap::getInstance()->setPaginationCookie($this->paginationCookie);
             $ldapUsers = Ldap::getInstance()->search($this->configuration['users']['basedn'], $filter, $attributes, false, 0, $continueLastSearch);
+            $this->paginationCookie = Ldap::getInstance()->getPaginationCookie();
+
             unset($ldapUsers['count']);
         }
 
@@ -159,6 +173,7 @@ class UserImportUtility
      */
     public function hasMoreLdapUsers()
     {
+        Ldap::getInstance()->setPaginationCookie($this->paginationCookie);
         return Ldap::getInstance()->isPartialSearchResult();
     }
 

@@ -393,6 +393,23 @@ class LdapUtility
     }
 
     /**
+     * @return string
+     */
+    public function getPaginationCookie()
+    {
+        return $this->paginationCookie;
+    }
+
+    /**
+     * @param string $paginationCookie
+     */
+    public function setPaginationCookie($paginationCookie)
+    {
+        $this->paginationCookie = $paginationCookie;
+    }
+
+
+    /**
      * Returns the first entry.
      *
      * @return array
